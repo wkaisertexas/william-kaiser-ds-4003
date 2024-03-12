@@ -1,0 +1,274 @@
+id,name,description,mnemonic,department_id
+1,African-American and African Studies,,AAS,49
+3,Air Science,,AIRS,67
+5,Applied Mechanics,,AM,37
+6,American Studies,,AMST,50
+7,Anthropology,,ANTH,2
+8,Applied Mathematics,,APMA,22
+9,Arabic,,ARAB,18
+10,Arts Administration,,ARAD,3
+11,History of Art and Architecture,,ARAH,3
+14,History of Art,,ARTH,3
+15,Studio Art,,ARTS,3
+16,American Sign Language,,ASL,48
+17,Astronomy,,ASTR,4
+18,Bengali,,BENG,64
+22,Biology,,BIOL,5
+24,Biomedical Engineering,,BME,27
+26,Common Course-Sciences,,CCSC,1
+27,Civil Engineering,,CE,30
+29,Chemical Engineering,,CHE,28
+30,Chemistry,,CHEM,6
+31,Chinese,,CHIN,9
+32,Chinese in Translation,,CHTR,9
+33,Classics,,CLAS,7
+34,Cognitive Science,,COGS,51
+35,College Advising Seminar,,COLA,52
+37,Comparative Literature,,CPLT,11
+38,Computer Science,,CS,31
+39,Dance,,DANC,8
+40,Drama,,DRAM,8
+41,East Asian Studies,,EAST,9
+42,Electrical and Computer Engineering,,ECE,35
+43,Economics,,ECON,10
+47,English-American Literature to 1900,,ENAM,11
+48,English-Criticism,,ENCR,11
+49,English-Restoration and Eighteenth-Century Lit,,ENEC,11
+50,English-Miscellaneous,,ENGL,11
+51,English-Genre Studies,,ENGN,11
+52,Engineering,,ENGR,71
+53,English-Introductory Seminar in Literature,,ENLT,11
+54,English-Modern & Contemporary Literature,,ENMC,11
+55,English-Medieval Literature,,ENMD,11
+56,English-Nineteenth-Century British Literature,,ENNC,11
+57,English-Pedagogy,,ENPG,11
+58,English-Poetry Writing,,ENPW,11
+59,English-Renaissance Literature,,ENRN,11
+60,English-Special Topics in Literature,,ENSP,11
+61,"English-Academic, Professional, & Creative Writing",,ENWR,11
+62,Engineering Physics,,EP,36
+63,English as a Second Language,,ESL,11
+64,Enviromental Thought and Practice,,ETP,54
+65,Environmental Sciences-Atmospheric Sciences,,EVAT,12
+66,Environmental Sciences-Ecology,,EVEC,12
+67,Environmental Sciences-Geosciences,,EVGE,12
+68,Environmental Sciences-Hydrology,,EVHY,12
+69,Environmental Sciences,,EVSC,12
+70,French,,FREN,13
+74,Global Development Studies,,GDS,55
+75,German,,GERM,14
+76,German in Translation,,GETR,14
+78,Greek,,GREE,7
+79,Human Biology,,HBIO,5
+80,Hebrew,,HEBR,18
+81,Hebrew in Translation,,HETR,18
+82,History-African History,,HIAF,15
+83,History-East Asian History,,HIEA,15
+84,History-European History,,HIEU,15
+85,History-Latin American History,,HILA,15
+86,History-Middle Eastern History,,HIME,15
+87,Hindi,,HIND,18
+88,History-South Asian History,,HISA,15
+89,History-General History,,HIST,15
+90,History-United States History,,HIUS,15
+92,College Science Scholars Seminar,,HSCI,1
+93,Interdisciplinary Thesis,,IMP,41
+94,Interdisciplinary Studies,,INST,41
+95,Interdisciplinary Studies-Business,,ISBU,41
+96,Interdisciplinary Studies-Capstone Project,,ISCP,41
+97,Interdisiplinary Studies-Humanities,,ISHU,41
+98,Interdisciplinary Studies-Liberal Studies Seminar,,ISLS,41
+99,Interdisciplinary Studies-Proseminar,,ISPS,41
+100,Interdisciplinary Studies-Social Sciences,,ISSS,41
+102,Italian,,ITAL,33
+103,Italian in Translation,,ITTR,33
+104,Japanese,,JAPN,9
+105,Japanese in Translation,,JPTR,9
+106,Jewish Studies,,JWST,56
+107,Korean,,KOR,9
+109,Liberal Arts Seminar,,LASE,58
+110,Latin American Studies,,LAST,57
+111,Latin,,LATI,7
+113,Linguistics,,LING,59
+114,General Linguistics,,LNGS,59
+115,Mechanical & Aerospace Engineering,,MAE,37
+116,Mathematics,,MATH,16
+117,Media Studies,,MDST,17
+119,Middle Eastern & South Asian Languages & Cultures,,MESA,18
+121,Military Science,,MISC,67
+12,Architecture,,ARCH,75
+13,Architectural History,,ARH,76
+108,Landscape Architecture,,LAR,77
+44,Education-Human Services,,EDHS,81
+46,"Education-Leadership, Foundations, and Policy",,EDLF,83
+36,Commerce,,COMM,86
+73,Graduate Commerce,,GCOM,87
+72,Clinical Nurse Leader,,GCNL,88
+77,Graduate Nursing,,GNUR,89
+71,Graduate Business,,GBUS,93
+112,Law,,LAW,94
+2,Accounting,,ACCT,95
+25,Business,,BUS,96
+91,Human Resources,,HR,97
+101,Informational Technology,,IT,98
+19,Biomedical Sciences,,BIMS,121
+20,Biochemistry,,BIOC,122
+21,Bioethics,,BIOE,123
+23,Biophysics,,BIOP,124
+28,Cell Biology,,CELL,125
+118,Medicine,,MED,126
+120,Microbiology,,MICR,127
+122,Materials Science and Engineering,,MSE,36
+123,Medieval Studies,,MSP,60
+124,Music-Marching Band,,MUBD,19
+125,Music-Ensembles,,MUEN,19
+126,Music-Private Performance Instruction,,MUPF,19
+127,Music,,MUSI,19
+128,Naval Science,,NASC,67
+140,Neuroscience,,NESC,62
+146,Persian,,PERS,18
+147,Persian in Translation,,PETR,18
+149,Philosophy,,PHIL,20
+150,Public Health Sciences,,PHS,24
+151,Public Health Sciences Ethics,,PHSE,1
+154,Physics,,PHYS,21
+156,Politics-Departmental Seminar,,PLAD,23
+158,Politics-American Politics,,PLAP,23
+159,Politics-Comparative Politics,,PLCP,23
+160,Politics-International Relations,,PLIR,23
+161,Politics-Political Theory,,PLPT,23
+162,Polish,,POL,29
+163,Portuguese,,PORT,33
+164,"Political Philosophy, Policy, and Law",,PPL,72
+170,Political and Social Thought,,PST,63
+172,Psychology,,PSYC,25
+173,Religion-African Religions,,RELA,26
+174,Religion-Buddhism,,RELB,26
+175,Religion-Christianity,,RELC,26
+176,Religion-General Religion,,RELG,26
+177,Religion-Hinduism,,RELH,26
+178,Religion-Islam,,RELI,26
+179,Religion-Judaism,,RELJ,26
+180,Religion-Special Topic,,RELS,26
+181,Russian,,RUSS,29
+182,Russian in Translation,,RUTR,29
+183,Sanskrit,,SANS,18
+185,South Asian Studies,,SAST,18
+186,South Asian Literature in Translation,,SATR,18
+187,Slavic,,SLAV,29
+188,Slavic Folklore & Oral Literature,,SLFK,29
+189,Slavic in Translation,,SLTR,29
+190,Sociology,,SOC,32
+191,Spanish,,SPAN,33
+192,Statistics,,STAT,34
+193,"Science, Technology, and Society",,STS,38
+194,Studies in Women and Gender,,SWAG,66
+195,Systems & Information Engineering,,SYS,39
+196,Tibetan,,TBTN,9
+197,Urdu,,URDU,18
+198,University Seminar,,USEM,70
+199,Yiddish,,YIDD,14
+200,Arabic in Translation,,ARTR,18
+202,"East Asian Languages, Literatures, and Cultures",,EALC,9
+203,Middle Eastern Studies,,MEST,18
+205,Semester at Sea,,SEMS,73
+206,Undergraduate Non-Resident,,NRES,1
+207,Swahili,,SWAH,49
+208,Study Abroad,,ZFOR,1
+209,Korean in Translation,,KRTR,9
+210,English-Language Study,,ENLS,11
+211,Pavilion Seminars,,PAVS,65
+213,French in Translation,,FRTR,13
+214,Women and Gender Studies,,WGS,66
+215,College Art Scholars Seminar,,CASS,3
+216,Humanities and Global Cultures,,IHGC,1
+218,Archaeology,,ARCY,1
+219,University Studies,,UNST,1
+220,Bengali in Translation,,BETR,1
+221,Non-Credit Health Professions,,NCHP,1
+222,Graduate Non-Resident,,NRGA,1
+223,Portuguese in Translation,,POTR,1
+224,Personal Skills,,PLSK,1
+225,Interdisciplinary Studies-Individualized Other,,ISIN,1
+227,Spanish in Translation,,SPTR,1
+228,Computer Engineering,,CPE,1
+229,PS-Health Sciences Management,,PSHM,1
+230,CREO,,CREO,1
+231,DS,,DS,1
+232,EGMT,,EGMT,1
+233,ELA,,ELA,1
+234,ENCW,,ENCW,1
+235,ENTP,,ENTP,1
+236,EURS,,EURS,1
+237,FORU,,FORU,1
+238,GSMS,,GSMS,1
+239,GSSJ,,GSSJ,1
+240,GSVS,,GSVS,1
+241,KICH,,KICH,1
+242,LPPA,,LPPA,1
+243,LPPL,,LPPL,1
+244,LPPP,,LPPP,1
+157,Urban and Environmental Planning,,PLAN,79
+184,Architecture School,,SARC,80
+153,Physical Education,,PHYE,84
+226,Kinesiology,,KINE,85
+141,Nursing Core,,NUCO,90
+143,Nursing,,NURS,92
+129,Non-Credit Architecture & Environment Design,,NCAR,99
+130,Non-Credit Business and Management,,NCBM,100
+131,Non-Credit Education,,NCED,101
+132,Non-Credit Fine and Applied Arts,,NCFA,102
+133,Non-Credit Foreign Language,,NCFL,103
+134,Non-Credit Letters,,NCLE,104
+135,Non-Credit Personal Development,,NCPD,105
+136,Non-Credit Physical Sciences,,NCPH,106
+137,Non-Credit Professional Review,,NCPR,107
+138,Non-Credit Social Sciences,,NCSS,108
+139,Non-Credit Theology,,NCTH,109
+166,Professional Studies-Education,,PSED,111
+167,Professional Studies-MT,,PSMT,112
+168,Professional Studies-Public Administration,,PSPA,113
+169,Professional Studies-Project Management,,PSPM,114
+171,Professional Studies-Workforce Development,,PSWD,115
+201,Criminal Justice,,CJ,116
+204,Professional Studies-Education Web-Based,,PSEW,117
+212,Professional Studies-Political Leadership,,PSPL,118
+217,Professional Studies-Health Policy,,PSHP,119
+165,Public Policy,,PPOL,120
+144,Pathology,,PATH,128
+148,Pharmacology,,PHAR,129
+152,Physiology,,PHY,130
+245,LPPS,,LPPS,1
+246,Unknown,,CONC,1
+247,Unknown,,DH,1
+248,Unknown,,FAC,1
+249,Unknown,,GBAC,1
+250,Unknown,,GSGS,1
+251,Unknown,,PSLP,1
+252,Unknown,,SEC,1
+253,,,BIOM,1
+254,,,NCAM,1
+255,,,NCEL,1
+256,,,PSSP,1
+257,,,TMP,1
+258,,,TURK,1
+259,,,ISED,1
+260,,,NCEN,1
+261,,,NCIS,1
+262,,,PSCJ,1
+263,,,PSLS,1
+264,,,SURG,1
+265,,,ENLP,1
+266,,,ISGE,1
+267,,,EDNC,1
+4,Architecture and Landscape Architecture,,ALAR,74
+155,Planning Application,,PLAC,78
+45,"Education-Curriculum, Instruction, & Special Ed",,EDIS,82
+142,Nursing Interprofessional,,NUIP,91
+145,Procurement and Contracts Management,,PC,110
+268,,,GHSS,1
+269,,,RSC,1
+270,,,KLPA,1
+271,,,GSAS,1
+272,,,GCCS,1
+273,,,PSPS,1

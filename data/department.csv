@@ -1,0 +1,122 @@
+id,name,description,website,school_id
+2,Anthropology,,,2
+3,Art,,,2
+4,Astronomy,,,2
+5,Biology,,,2
+6,Chemistry,,,2
+7,Classics,,,2
+8,Drama,,,2
+9,"East Asian Languages, Literatures & Cultures",,,2
+10,Economics,,,2
+11,English,,,2
+12,Environmental Sciences,,,2
+13,French Language & Literature,,,2
+14,German Languages & Literatures,,,2
+15,History,,,2
+16,Mathematics,,,2
+17,Media Studies,,,2
+18,Middle Eastern & South Asian Languages & Cultures,,,2
+19,Music,,,2
+20,Philosophy,,,2
+21,Physics,,,2
+22,Applied Mathematics,,,3
+23,Politics,,,2
+24,Public Health Sciences,,,2
+25,Psychology,,,2
+26,Religious Studies,,,2
+27,Biomedical Engineering,,,3
+28,Chemical Engineering,,,3
+29,Slavic Languages & Literatures,,,2
+30,Civil & Environmental Engineering,,,3
+32,Sociology,,,2
+33,"Spanish, Italian & Portuguese",,,2
+34,Statistics,,,2
+35,Electrical & Computer Engineering,,,3
+36,Materials Science & Engineering,,,3
+37,Mechanical & Aerospace Engineering,,,3
+38,"Science, Technology & Society",,,3
+39,Systems & Information Engineering,,,3
+41,Interdisciplinary Studies,,,1
+48,American Sign Language,,,2
+49,African-American & African Studies,,,2
+50,American Studies,,,2
+51,Cognitive Science,,,2
+52,College Advising Seminars,,,2
+53,East Asian Studies,,,2
+54,Environmental Thought & Practice,,,2
+55,Global Development Studies,,,2
+56,Jewish Studies,,,2
+57,Latin American Studies,,,2
+58,Liberal Arts Seminars,,,2
+59,Linguistics,,,2
+60,Medieval Studies,,,2
+61,Middle Eastern Studies,,,2
+62,Neuroscience,,,2
+63,Political & Social Thought,,,2
+64,South Asian Studies,,,2
+65,Pavilion Seminars,,,2
+66,"Women, Gender, and Sexuality",,,2
+67,ROTC,,,1
+70,University Seminars,,,1
+71,General Engineering,,,3
+72,"Political Philosophy, Policy, & Law",,,2
+73,Semester at Sea,,,1
+74,Architecture and Landscape Architecture,,,4
+75,Architecture,,,4
+76,Architectural History,,,4
+77,Landscape Architecture,,,4
+78,Planning Application,,,4
+79,Urban and Environmental Planning,,,4
+80,Architecture School,,,4
+81,Education-Human Services,,,5
+82,"Education-Curriculum, Instruction, & Special Ed",,,5
+83,"Education-Leadership, Foundations, and Policy",,,5
+84,Physical Education,,,5
+85,Kinesiology,,,5
+86,Commerce,,,6
+87,Graduate Commerce,,,6
+88,Clinical Nurse Leader,,,7
+89,Graduate Nursing,,,7
+90,Nursing Core,,,7
+91,Nursing Interprofessional,,,7
+92,Nursing,,,7
+93,Graduate Business,,,8
+94,Law,,,9
+95,Accounting,,,10
+96,Business,,,10
+97,Human Resources,,,10
+98,Informational Technology,,,10
+99,Non-Credit Architecture & Environment Design,,,10
+100,Non-Credit Business and Management,,,10
+101,Non-Credit Education,,,10
+102,Non-Credit Fine and Applied Arts,,,10
+103,Non-Credit Foreign Language,,,10
+104,Non-Credit Letters,,,10
+105,Non-Credit Personal Development,,,10
+106,Non-Credit Physical Sciences,,,10
+107,Non-Credit Professional Review,,,10
+108,Non-Credit Social Sciences,,,10
+109,Non-Credit Theology,,,10
+110,Procurement and Contracts Management,,,10
+111,Professional Studies-Education,,,10
+112,Professional Studies-MT,,,10
+113,Professional Studies-Public Administration,,,10
+114,Professional Studies-Project Management,,,10
+115,Professional Studies-Workforce Development,,,10
+116,Criminal Justice,,,10
+117,Professional Studies-Education Web-Based,,,10
+118,Professional Studies-Political Leadership,,,10
+119,Professional Studies-Health Policy,,,10
+120,Public Policy,,,11
+121,Biomedical Sciences,,,12
+122,Biochemistry,,,12
+123,Bioethics,,,12
+124,Biophysics,,,12
+125,Cell Biology,,,12
+126,Medicine,,,12
+127,Microbiology,,,12
+128,Pathology,,,12
+129,Pharmacology,,,12
+130,Physiology,,,12
+31,Computer Science,,,3
+1,Miscellaneous,,,1
