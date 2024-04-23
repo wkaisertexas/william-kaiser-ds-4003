@@ -64,3 +64,15 @@ h3 {
   border: 0.25px dashed black;
   opacity: 10%;
 }
+
+
+/* Creating a navbar */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.introPage {
+    max-width: 600px;
+}
