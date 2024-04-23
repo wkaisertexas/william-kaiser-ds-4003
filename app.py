@@ -19,7 +19,7 @@
 # 
 # For more information about data provenance, collection, formatting, and cleaning, please see [Sprint 2: Data](./sprints/sprint2-data.ipynb).
 
-# In[461]:
+# In[565]:
 
 
 # imports
@@ -37,7 +37,7 @@ import os
 tqdm.pandas()
 
 
-# In[462]:
+# In[566]:
 
 
 # Loading the data
@@ -46,7 +46,7 @@ df['course_level'] = pd.to_numeric(df['course_number']).apply(lambda x: x // 100
 df
 
 
-# In[463]:
+# In[567]:
 
 
 # Printing the columns
@@ -57,7 +57,7 @@ print("\n".join(df.columns.to_list()))
 # 
 # The goal of this section is for a specified course to be selected and then a radar plot to be generated based on the reviews for that course.
 
-# In[464]:
+# In[568]:
 
 
 REVIEW_COMPONENTS = {
@@ -111,7 +111,7 @@ def get_course_summary_ratings(pneumonic: str, number: int) -> pd.DataFrame:
 get_course_summary_ratings(*course_components(COURSE))
 
 
-# In[465]:
+# In[569]:
 
 
 # Creating a spider plot for the course
@@ -167,7 +167,7 @@ rows = pd.concat([cs_3100, cs_2130, cs_3130])
 # 
 # **Guide:** https://dash.plotly.com/datatable
 
-# In[466]:
+# In[570]:
 
 
 # Defining columns of interest
@@ -182,7 +182,7 @@ course_components_to_agg = {**TABLE_COMPONENTS, **REVIEW_COMPONENTS}
 course_components_to_agg
 
 
-# In[467]:
+# In[571]:
 
 
 def get_data_for_course_comparison_table(courses: List) -> pd.DataFrame:
@@ -204,7 +204,7 @@ specific_data = get_data_for_course_comparison_table(course_tuples)
 specific_data
 
 
-# In[468]:
+# In[572]:
 
 
 # making the table in plotly
@@ -257,7 +257,7 @@ table = go.Figure(
 # table  # note: I am pretty happy with this. I would like to add more interactivity here.
 
 
-# In[469]:
+# In[573]:
 
 
 # making a source dropdown
@@ -268,7 +268,7 @@ df['name'] = df['mnemonic'] + " " + df['course_number'].astype(str)
 df['name']
 
 
-# In[470]:
+# In[574]:
 
 
 # adding source dropdowns here
@@ -284,7 +284,7 @@ course_mneumoic_dropdown = dcc.Dropdown(
 # 
 # ![Correlating Instructor Reviews](./imgs/correlating_reviews.png)
 
-# In[471]:
+# In[575]:
 
 
 # the goal for this is to create the functions which can control for a  particular factor
@@ -297,7 +297,7 @@ CHECKBOX_SELECTORS = {
 }
 
 
-# In[472]:
+# In[576]:
 
 
 # making a bunch of checkboxes in plotly
@@ -310,7 +310,7 @@ checklist = dcc.Checklist(
 )
 
 
-# In[473]:
+# In[577]:
 
 
 # creating a histogram of course reviews
@@ -324,7 +324,7 @@ course_reviews = px.histogram(
 
 # ### Making a regression
 
-# In[474]:
+# In[578]:
 
 
 # making a linear regression model
@@ -345,7 +345,7 @@ model.fit(X_train, Y_train)
 print(model.coef_, model.intercept_)
 
 
-# In[475]:
+# In[579]:
 
 
 @callback(
@@ -388,7 +388,7 @@ def make_correlation_plot(columns):
         x=x_labels,
         y=y_values,
         title="Predictive Power of Each Feature",
-        labels={"x": "Feature", "y": "Correlational Association", **column_renamer},
+        labels={"x": "Feature", "y": "Linear Regression Strength", **column_renamer},
     )
 
     fig.update_layout(margin=dict(b=20, l=20, r=20, t=40))
@@ -398,7 +398,7 @@ def make_correlation_plot(columns):
 make_correlation_plot(new_columns)
 
 
-# In[476]:
+# In[580]:
 
 
 @callback(Output("review_residuals", "figure"), Input("features_to_plot", "value"))
@@ -451,7 +451,7 @@ def make_residual_plot(columns):
         nbins=100,
         labels={
             "count": "# of Reviews",  # for some reason this does not work
-            "x": "Residual Review (what's left over)",
+            "x": "Residual Review\n(what's left over)",
         },
     )
 
@@ -464,7 +464,7 @@ def make_residual_plot(columns):
 # make_residual_plot([])
 
 
-# In[477]:
+# In[581]:
 
 
 # getting measures of importance
@@ -481,7 +481,7 @@ X_train
 # 
 # ![Semantic Search](./imgs/semantic-search.png)
 
-# In[478]:
+# In[582]:
 
 
 # getting and saving course reviews
@@ -498,7 +498,7 @@ course_reviews['prompt'] = course_reviews.apply(make_prompt, axis=1)
 course_reviews['prompt']
 
 
-# In[479]:
+# In[583]:
 
 
 # getting the embeddings from OpenAI
@@ -514,7 +514,7 @@ def get_embedding(text, model="text-embedding-3-small"):
 # course_reviews.to_csv('data_1k_embeddings.csv', index=False)
 
 
-# In[480]:
+# In[584]:
 
 
 from pinecone import Pinecone, ServerlessSpec
@@ -538,7 +538,7 @@ spec = ServerlessSpec(cloud='aws', region='us-west-2')
 #     pass # index already created
 
 
-# In[481]:
+# In[585]:
 
 
 index = pc.Index("course-reviews-1k")
@@ -565,7 +565,7 @@ index = pc.Index("course-reviews-1k")
 # 
 # Centrally locates all of the callback code for the Dash app.
 
-# In[482]:
+# In[586]:
 
 
 # making a dash table so that things work off the cuff
@@ -602,7 +602,7 @@ def update_table_data(data) -> pd.DataFrame:
 update_table_data(["CS 3100"])
 
 
-# In[483]:
+# In[587]:
 
 
 @callback(
@@ -640,7 +640,7 @@ def search_for_course(search_term):
 # search_for_course("A foundational computer science course")
 
 
-# In[484]:
+# In[588]:
 
 
 # defining callbacks
@@ -682,7 +682,7 @@ def update_course_hours(courses: str):
 # 
 # Where all of the components come together to make the final dashboard. This launches the layout and the final project.
 
-# In[485]:
+# In[589]:
 
 
 # Making an app to display everything
@@ -705,7 +705,12 @@ header = html.Div(
         html.H6("By William Kaiser for DS 4003"),
         dcc.Markdown(
             """
-        The course review explorer uses data from [theCourseForum](https://thecourseforum.com) to provide visualizations of the student experience to students and instructors. Specifically, students should be able to visually compare a "shortlist" of candidates in a visual manner through a Radar plot. Additionally, instructors (professors and more) should be able to understand visually what goes into a review. Misconceptions surround course reviews and seeing the relative importance of a couple of key features is important to understanding the student experience. 
+        The course review explorer uses data from [theCourseForum](https://thecourseforum.com), a student-run course review platform which has collected course reviews since 2006, to provide visualizations of the student experience to students and instructors. 
+        
+        
+        Specifically, students should be able to visually compare a "shortlist" of candidates in a visual manner and search using natural (non-technical language). 
+        
+        Additionally, instructors should be able to understand visually what goes into a review. Misconceptions surround course reviews. Specifically, what do instructors actually care about? Seeing the relative importance of a couple of key features can show what students are keeping in mind when reviewing courses.
         """, className="introPage"
         ),
     ]
@@ -715,7 +720,7 @@ header = html.Div(
 course_filter_header = html.Div(
     [
         html.H3("Breaking down ratings"),
-        html.P("Examine course reviews for a particular class"),
+        html.P("Compare what students said about a few courses in a visual radar plot. Good for comparing a shortlist of candidates to take in the following semester."),
     ]
 )
 
@@ -780,7 +785,7 @@ course_filter_section = html.Div(
 controlling_factors = html.Div(
     [
         html.H3("Correlating Instructor Reviews"),
-        html.P("Control for the following factors"),
+        html.P("Control for factors commonly cited as explaining reviews. By selecting each of these factors, the linear model trained will consider each of the following features"),
         checklist,
     ],
     className="one-third column",
@@ -789,7 +794,7 @@ controlling_factors = html.Div(
 distribution_of_reviews = html.Div(
     [
         html.H3("Distribution of Residuals"),
-        html.P("What's left over?"),
+        html.P("What's left over once you control for these factors? Looking at the distribution of what is left over, can provide insights into student thinking (hint: look at the skew present)"),
         dcc.Graph(id="review_residuals"),
     ],
     className="one-third column",
@@ -798,7 +803,7 @@ distribution_of_reviews = html.Div(
 predictive_power_of_features = html.Div(
     [
         html.H3("Predictive Power of Features"),
-        html.P("How well do these features predict the instructor rating?"),
+        html.P("How well do these features predict the instructor rating? What is the strength of each coefficient? Is a coefficient positive or negative?"),
         dcc.Graph(id="correlation_plot"),
     ],
     className="one-third column",
@@ -841,6 +846,7 @@ search_box = html.Div(
 search_table = html.Div(
     [
         html.H2("Courses Matching Your Description"),
+        html.P("These are courses which an embedding model has deemed are sufficiently close to your query. Note: some of these courses are old and are not currently being taught in the next semester."),
         dash_table.DataTable(
             id="search_results",
             data=[],
@@ -894,7 +900,7 @@ Explore courses that you may have not considered taking before, but have a prove
 
 ### General Footer
 footer = dcc.Markdown("""
-Have any **more** about course reviews or how to make this visualization better? Please let me know! You can reach me at at [xbk6xm@virginia.edu](mailto:xbk6xm@virginia.edu). Alternatively, you could could [Submit an Issue on GitHub](https://github.com/wkaisertexas/william-kaiser-ds-4003).
+Have any **more** thoughts about course reviews or how to make this visualization better? Please let me know! You can reach me at at [xbk6xm@virginia.edu](mailto:xbk6xm@virginia.edu). Alternatively, you could could [Submit an Issue on GitHub](https://github.com/wkaisertexas/william-kaiser-ds-4003) with your comment..
 """)
 
 ### Pretty Looking Columns w/ Dashed Borders
@@ -939,7 +945,7 @@ app.layout = html.Div(
 server = app.server
 
 
-# In[486]:
+# In[590]:
 
 
 if __name__ == "__main__":
