@@ -19,7 +19,7 @@
 # 
 # For more information about data provenance, collection, formatting, and cleaning, please see [Sprint 2: Data](./sprints/sprint2-data.ipynb).
 
-# In[167]:
+# In[132]:
 
 
 # Generic imports
@@ -27,6 +27,10 @@ import pandas as pd
 # import numpy as np
 # import matplotlib.pyplot as plt
 # import seaborn as sns
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from tqdm import tqdm
+from openai import OpenAI
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
@@ -34,8 +38,10 @@ from dash import dash_table, dcc, Dash, html, callback, Input, Output, State
 from typing import List, Dict, TypedDict
 import os
 
+tqdm.pandas()
 
-# In[168]:
+
+# In[133]:
 
 
 # Loading the data
@@ -44,7 +50,7 @@ df['course_level'] = pd.to_numeric(df['course_number']).apply(lambda x: x // 100
 df
 
 
-# In[169]:
+# In[134]:
 
 
 # Printing the columns
@@ -55,7 +61,7 @@ print("\n".join(df.columns.to_list()))
 # 
 # The goal of this section is for a specified course to be selected and then a radar plot to be generated based on the reviews for that course.
 
-# In[170]:
+# In[135]:
 
 
 REVIEW_COMPONENTS = {
@@ -84,7 +90,7 @@ def course_components(course_pneumonic_and_number: str) -> (str, int):
         course_pneumonic_and_number.strip().upper().replace("  ", " ").split(" ")
     )
     pneumoic, number = course_pneumonic_and_number
-    print(pneumoic, number)
+
     return pneumoic, int(number)
 
 
@@ -109,7 +115,7 @@ def get_course_summary_ratings(pneumonic: str, number: int) -> pd.DataFrame:
 get_course_summary_ratings(*course_components(COURSE))
 
 
-# In[171]:
+# In[136]:
 
 
 # Creating a spider plot for the course
@@ -125,6 +131,7 @@ def course_axis(
     """
     Makes a polar axis to compare courses
     """
+
     if "duration" in include:
         frame = frame[frame["category"].apply(lambda name: name.find("amount") != -1)]
     if "rating" in include:
@@ -152,7 +159,7 @@ ds_4003 = get_course_summary_ratings(*course_components("DS 4003"))
 
 rows = pd.concat([cs_3100, cs_2130, cs_3130, ds_4003])
 
-course_axis(rows, course="CS 3100")
+# course_axis(rows, course="CS 3100")
 
 
 # ## Excel-Style Filterable Table
@@ -165,7 +172,7 @@ course_axis(rows, course="CS 3100")
 # 
 # **Guide:** https://dash.plotly.com/datatable
 
-# In[172]:
+# In[137]:
 
 
 # Defining columns of interest
@@ -180,39 +187,35 @@ course_components_to_agg = {**TABLE_COMPONENTS, **REVIEW_COMPONENTS}
 course_components_to_agg
 
 
-# In[173]:
+# In[138]:
 
 
 def get_data_for_course_comparison_table(courses: List) -> pd.DataFrame:
     """
     Gets relevant course_components to aggregate for a list of courses
     """
-    print(courses)
-
     # filtering the data down to the relevant frame
     mask = df["mnemonic"] == -1
     for course in courses:
         pneumonic, number = course
         mask = mask | ((df["mnemonic"] == pneumonic) & (df["course_number"] == number))
-    
-    relevant = df[mask]
 
-    grouped = relevant.groupby(["mnemonic", "course_number"]).agg({ key: 'mean' for key in course_components_to_agg.keys() }).reset_index()
+    grouped = df[mask].groupby(["mnemonic", "course_number"]).agg({ key: 'mean' for key in course_components_to_agg.keys() }).reset_index()
 
     return grouped
 
 course_tuples = [course_components(course) for course in SAMPLE_COURSES]
-course_data = get_data_for_course_comparison_table(course_tuples)
-course_data
+specific_data = get_data_for_course_comparison_table(course_tuples)
+specific_data
 
 
-# In[174]:
+# In[139]:
 
 
 # making the table in plotly
 # source: https://plotly.com/python/table/
 
-course_components_to_agg = {
+new_course_components_to_agg = {
     **course_components_to_agg,
     "course_number": "Course #",
     "mnemonic": "Mnemonic",
@@ -228,11 +231,10 @@ def get_cells(course_data: pd.DataFrame) -> List[List[any]]:
 
 pretty_column_names = list(
     map(
-        lambda col: f"<b>{course_components_to_agg.get(col, col).replace(' ', '<br>')}</b><br>",
-        course_data.columns.to_list(),
+        lambda col: f"<b>{new_course_components_to_agg.get(col, col).replace(' ', '<br>')}</b><br>",
+        specific_data.columns.to_list(),
     )
 )
-
 
 table = go.Figure(
     data=[
@@ -246,7 +248,7 @@ table = go.Figure(
                 height=40,
             ),
             cells=dict(
-                values=get_cells(course_data),
+                values=get_cells(specific_data),
                 line_color="darkslategray",
                 fill=dict(color=["paleturquoise", "white"]),
                 align=["left", "center"],
@@ -257,10 +259,10 @@ table = go.Figure(
     ]
 )
 
-table  # note: I am pretty happy with this. I would like to add more interactivity here.
+# table  # note: I am pretty happy with this. I would like to add more interactivity here.
 
 
-# In[175]:
+# In[140]:
 
 
 # making a source dropdown
@@ -271,7 +273,7 @@ df['name'] = df['mnemonic'] + " " + df['course_number'].astype(str)
 df['name']
 
 
-# In[176]:
+# In[141]:
 
 
 # adding source dropdowns here
@@ -283,11 +285,47 @@ course_mneumoic_dropdown = dcc.Dropdown(
 )
 
 
+# In[142]:
+
+
+# making a dash table so that things work off the cuff
+@callback(
+    Output('course_table', 'data'),
+    Input('course_dropdown', 'value')
+)
+def update_table_data(data) -> pd.DataFrame:
+    """
+    Updates the data table to show the dropdown values
+    """
+    if isinstance(data, str):
+        data = [data]
+    
+    course_tuples = [course_components(course) for course in data]
+
+    course_data = get_data_for_course_comparison_table(course_tuples)
+
+    course_data['course_number'] = course_data['course_number'].apply(int).apply(str)
+    course_data['average'] = course_data['average'].apply(lambda x: f"{x:.2f}")
+    course_data['amount_reading'] = course_data['amount_reading'].apply(lambda x: f"{x:.2f}")
+    course_data['amount_writing'] = course_data['amount_writing'].apply(lambda x: f"{x:.2f}")
+    course_data['amount_group'] = course_data['amount_group'].apply(lambda x: f"{x:.2f}")
+    course_data['amount_homework'] = course_data['amount_homework'].apply(lambda x: f"{x:.2f}")
+    course_data['instructor_rating'] = course_data['instructor_rating'].apply(lambda x: f"{x:.2f}")
+    course_data['difficulty'] = course_data['difficulty'].apply(lambda x: f"{x:.2f}")
+    course_data['recommendability'] = course_data['recommendability'].apply(lambda x: f"{x:.2f}")
+    course_data['enjoyability'] = course_data['enjoyability'].apply(lambda x: f"{x:.2f}")
+    
+    return course_data.to_dict(orient='records')
+
+
+update_table_data(["CS 3100"])
+
+
 # # Breaking Down Instructor Rating
 # 
 # ![Correlating Instructor Reviews](./imgs/correlating_reviews.png)
 
-# In[177]:
+# In[143]:
 
 
 # the goal for this is to create the functions which can control for a  particular factor
@@ -300,7 +338,7 @@ CHECKBOX_SELECTORS = {
 }
 
 
-# In[178]:
+# In[144]:
 
 
 # making a bunch of checkboxes in plotly
@@ -313,7 +351,7 @@ checklist = dcc.Checklist(
 )
 
 
-# In[179]:
+# In[145]:
 
 
 # creating a histogram of course reviews
@@ -321,18 +359,14 @@ course_reviews = px.histogram(
     df.groupby(["mnemonic", "course_number"]).agg({"instructor_rating": "mean"}),
     x="instructor_rating",
 )
-course_reviews
+
+# course_reviews
 
 
 # ### Making a regression
 
-# In[180]:
+# In[146]:
 
-
-import sklearn
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
 
 # making a linear regression model
 model = LinearRegression()
@@ -352,7 +386,7 @@ model.fit(X_train, Y_train)
 print(model.coef_, model.intercept_)
 
 
-# In[181]:
+# In[147]:
 
 
 @callback(
@@ -365,7 +399,7 @@ def make_correlation_plot(columns):
     """
     # uses the data from the model
     data = zip(new_columns, model.coef_[0])
-    print(data)
+
     # filter the data by which the column is in the columns
     column_renamer = {
         'average': 'GPA',
@@ -374,6 +408,12 @@ def make_correlation_plot(columns):
         'amount_group': 'Group Work Per Week'
     }
 
+    if isinstance(columns, str):
+        columns = [columns]
+
+    if len(columns) == 0:
+        return
+
     x_labels = []
     y_values = []
     for col, r in data:
@@ -381,121 +421,456 @@ def make_correlation_plot(columns):
             x_labels.append(column_renamer.get(col, col))
             y_values.append(r)
     
-    print(x_labels, y_values)
-    
     fig = px.bar(x=x_labels, y=y_values, labels= {'x': 'Feature', 'y': 'Correlation Coefficient', **column_renamer})
     return fig
 
 make_correlation_plot(new_columns)
 
 
-# # Final Dashboard Created
+# In[148]:
 
-# In[182]:
+
+@callback(Output("review_residuals", "figure"), Input("features_to_plot", "value"))
+def make_residual_plot(columns):
+    """
+    Makes a bar chart of the correlation between columns
+    """
+    data = zip(new_columns, model.coef_[0])
+
+    # filter the data by which the column is in the columns
+    column_renamer = {
+        "average": "GPA",
+        "difficulty": "Difficulty",
+        "hours_per_week": "Hours Worked Per Week",
+        "amount_group": "Group Work Per Week",
+    }
+
+    # Getting the relevant columns
+    x_labels = []
+    y_values = []
+    for col, r in data:
+        if col in columns:
+            x_labels.append(column_renamer.get(col, col))
+            y_values.append(r)
+
+    # Creating a data frame copy
+    avg_course_ratings = df.groupby(["mnemonic", "course_number"])[new_columns + ['instructor_rating']].mean().reset_index()
+
+    new_df = avg_course_ratings.copy(deep=True)
+    for col in new_columns:
+        if col not in columns:
+            new_df[col] = new_df[col].apply(lambda x: 0)
+
+    # Making the residuals
+    residuals = (
+        pd.Series(model.predict(new_df[new_columns]).flatten())
+        - new_df["instructor_rating"]
+    )
+
+    residuals = residuals.dropna()
+
+    # Making a detailed histogram of residuals
+    fig = px.histogram(
+        x=residuals,
+        title="Review Residuals",
+        nbins=100,
+        labels={
+            "count": "# of Reviews",  # for some reason this does not work
+            "x": "Difference between predicted and actual review",
+        },
+    )
+
+    fig.update_layout(yaxis_title="Frequency")
+
+    # making a plot of reviews
+    return fig
+
+# make_residual_plot([])
+
+
+# In[149]:
+
+
+# getting measures of importance
+
+from sklearn.inspection import permutation_importance
+
+result = permutation_importance(model, X_test, Y_test, n_repeats=10, random_state=42)
+
+X_train
+
+
+# ## Building Semantic Search
+# 
+# Semantic search will take place with an OpenAI client and a embedding model. This will use a pinecone database for textual similarity.
+# 
+# ![Semantic Search](./imgs/semantic-search.png)
+
+# In[150]:
+
+
+# getting and saving course reviews
+course_reviews = df.groupby(['title', 'description']).agg({'instructor_rating': 'mean'}).reset_index()
+
+def make_prompt(row):
+    """
+    Makes a prompt for the user to ask the course
+    """
+
+    return f"""course name {row['title']} ({row['description']}) has an average rating of {row['instructor_rating']}"""
+
+course_reviews['prompt'] = course_reviews.apply(make_prompt, axis=1)
+course_reviews['prompt']
+
+
+# In[151]:
+
+
+# getting the embeddings from OpenAI
+# from: https://platform.openai.com/docs/guides/embeddings/use-cases
+
+client = OpenAI()
+
+def get_embedding(text, model="text-embedding-3-small"):
+   text = text.replace("\n", " ")
+   return client.embeddings.create(input = [text], model=model).data[0].embedding
+
+# course_reviews['ada_embedding'] = course_reviews['prompt'].progress_apply(lambda x: get_embedding(x, model='text-embedding-3-small'))
+# course_reviews.to_csv('data_1k_embeddings.csv', index=False)
+
+
+# In[152]:
+
+
+from pinecone import Pinecone, ServerlessSpec
+# import os
+
+# initialize connection to pinecone (get API key at app.pc.io)
+api_key = os.environ.get('PINECONE_API_KEY') or '6b801a89-8fad-44bd-a8f5-1c2be8a9d208'
+
+# configure client
+pc = Pinecone(api_key=api_key)
+spec = ServerlessSpec(cloud='aws', region='us-west-2')
+
+# try:
+#     pc.create_index(
+#         name="course-reviews-1k", 
+#         dimension=1536, 
+#         metric="euclidean",
+#         spec=spec
+#     )
+# except:
+#     pass # index already created
+
+
+# In[153]:
+
+
+index = pc.Index("course-reviews-1k")
+
+# def force_ascii(string: str) -> str:
+#     """
+#     Forces a string to be ascii
+#     """
+#     return string.encode('ascii', errors='ignore').decode('ascii')
+
+# # making the things to upsert
+# upsertion_reviews = [
+#     {"id": force_ascii(item["title"]), "values": item["ada_embedding"]}
+#     for item in course_reviews.to_dict(orient="records")
+# ]
+
+# # upload loop
+# for i in range(0, len(upsertion_reviews), 100):
+#     print(f"Uploading {i} to {i + 100}")
+#     index.upsert(vectors=upsertion_reviews[i:i + 100])
+
+
+# In[154]:
+
+
+# @callback(
+#     Output("search_results", "data"),
+#     Input('search-input', 'value'),
+# )
+# def search_for_course(search_term):
+#     """
+#     Performs a semantic search to get the course data
+#     """
+
+#     # gets the embeddings
+#     search_term = str(search_term)
+#     embedding = get_embedding(search_term)
+
+#     # searches for the embeddings
+#     results = index.query(vector=embedding, top_k=5)
+
+#     # gets the results
+#     matches = results['matches']
+#     ids = [match['id'] for match in matches]
+
+#     # gets the data
+#     data = course_reviews[course_reviews['title'].isin(ids)]
+
+#     # returns the correct values
+#     return data.to_dict(orient="records")
+
+# search_for_course("A foundational computer science course")
+
+
+# ## Final Dashboard
+# 
+# Where all of the components come together to make the final dashboard. This launches the layout and the final project.
+
+# In[155]:
 
 
 # defining callbacks
-@callback(
-    Output(component_id="course_axis", component_property="figure"),
-    (Input(component_id="course_dropdown", component_property="value"))
-)
-def update_course_axis(course: str):
-    """
-    Updates the course axis
-    """
-    if course is str: # if the course is a string
-        course = [course]
+# @callback(
+#     Output(component_id="course_axis", component_property="figure"),
+#     Input(component_id="course_dropdown", component_property="value"),
+# )
+# def update_course_axis(courses: str):
+#     """
+#     Updates the course axis
+#     """
+#     if isinstance(courses, str): # if the course is a string
+#         courses = [courses]
     
-    summary = pd.concat([get_course_summary_ratings(*course_components(course)) for course in course])
+#     summary = pd.concat([get_course_summary_ratings(*course_components(course)) for course in courses])
     
-    # rows = pd.concat([cs_3100, cs_2130, cs_3130, ds_4003])
+#     return course_axis(summary, course=courses)
 
-    # course_data = get_course_summary_ratings(*course_components(course))
-    return course_axis(summary, course=course)
 
-@callback(
-    Output(component_id="course_hours", component_property="figure"),
-    (Input(component_id="course_dropdown", component_property="value"))
-)
-def update_course_hours(course: str):
-    """
-    Updates the course hours
-    """
-    if course is str:
-        course = [course]
+# @callback(
+#     Output(component_id="course_hours", component_property="figure"),
+#     Input(component_id="course_dropdown", component_property="value"),
+# )
+# def update_course_hours(courses: str):
+#     """
+#     Updates the course hours
+#     """
+#     if isinstance(courses, str):
+#         courses = [courses]
     
-    summary = pd.concat([get_course_summary_ratings(*course_components(course)) for course in course])
-    return course_axis(summary, course=course, include="duration")
+#     summary = pd.concat([get_course_summary_ratings(*course_components(course)) for course in courses])
+
+#     return course_axis(summary, include="duration")
 
 
 ### Training a linear model to predict the instructor rating based on (GPA, Course Level, Difficulty, Hours Worked Per Week, Group Work Per Week)
 
 
-# In[ ]:
+# In[156]:
 
 
 # Making an app to display everything
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css", "./style.css"]
 
-app = Dash(__name__, external_stylesheets=external_stylesheets)
+app = Dash(
+    __name__,
+    title="theCourseForum Data Exploration - Data Design II: Interactive Apps",
+    external_stylesheets=external_stylesheets,
+)
 
 ### HEADER ###
-header = html.Div([
-    html.H1("Course Review Explorer"),
-])
+header = html.Div(
+    [
+        html.H1("Course Review Explorer"),
+        dcc.Markdown(
+            """
+        The course review explorer uses data from [theCourseForum](https://thecourseforum.com) to provide visualizations of the student experience to:
+
+        - **Students**
+        - **Instructors**
+
+        Specifically, students should be able to visually compare a "shortlist" of candidates in a visual manner through a Radar plot. Additionally, instructors (professors and more) should be able to understand visually what goes into a review. Misconceptions surround course reviews and seeing the relative importance of a couple of key features is important to understanding the student experience. 
+        """
+        ),
+    ]
+)
 
 ### BREAKING DOWN RATINGS ###
-course_filter_header = html.Div([
-    html.H1("Breaking down ratings"),
-    html.P("Examine course reviews for a particular class"),
-])
+course_filter_header = html.Div(
+    [
+        html.H3("Breaking down ratings"),
+        html.P("Examine course reviews for a particular class"),
+    ]
+)
 
-course_filter_row = html.Div([
-     dcc.Graph(figure=course_axis(rows, course="CS 3100"), id="course_axis", className="one-half column"),
-     dcc.Graph(figure=course_axis(rows, course="CS 2130"), id="course_hours", className="one-half column"),
-     dcc.Graph(figure=table, id="course_table", className="one-half column"),
-], className="row")
 
-course_filter_section = html.Div([
-    course_filter_header,
-    course_mneumoic_dropdown,
-    course_filter_row,
-])
+filtering_column_names = [
+    {
+        "name": new_course_components_to_agg.get(key, key).replace(" ", "\n"),
+        "id": key,
+    }
+    for i, key in enumerate(
+        [
+            "mnemonic",
+            "course_number",
+            "average",
+            "instructor_rating",
+            "difficulty",
+            "recommendability",
+            "enjoyability",
+            "amount_reading",
+            "amount_writing",
+            "amount_group",
+            "amount_homework",
+        ]
+    )  # new_course_components_to_agg.keys()
+]
+course_filter_row = html.Div(
+    [
+        dcc.Graph(
+            # figure=course_axis(rows, course="CS 3100"),
+            id="course_axis",
+            className="one-half column",
+        ),
+        dcc.Graph(
+            # figure=course_axis(rows, course="CS 3100"),
+            id="course_hours",
+            className="one-half column",
+        ),
+        html.Div(
+            [
+                dash_table.DataTable(
+                    id="course_table",
+                    columns=filtering_column_names,
+                    data=specific_data.to_dict(orient="records"),
+                ),
+            ],
+            className="one-half columns",
+        ),
+    ],
+    className="row",
+)
+
+course_filter_section = html.Div(
+    [
+        course_filter_header,
+        course_mneumoic_dropdown,
+        course_filter_row,
+    ]
+)
 
 ### CORRELATING INSTRUCTOR REVIEWS ###
-controlling_factors = html.Div([
-    html.H1("Correlating Instructor Reviews"),
-    html.Div("Control for the following factors"),
-    checklist,
-], className="one-third column")
+controlling_factors = html.Div(
+    [
+        html.H3("Correlating Instructor Reviews"),
+        html.Div("Control for the following factors"),
+        checklist,
+    ],
+    className="one-third column",
+)
 
-distribution_of_reviews = html.Div([
-    html.H1("Distribution of Residuals"),
-    html.P("What's left over?"),
-    # dcc.Graph(figure=course_reviews, id="course_reviews"),
-], className="one-third column")
+distribution_of_reviews = html.Div(
+    [
+        html.H3("Distribution of Residuals"),
+        html.P("What's left over?"),
+        dcc.Graph(id="review_residuals"),
+    ],
+    className="one-third column",
+)
 
-predictive_power_of_features = html.Div([
-    html.H1("Predictive Power of Features"),
-    html.P("How well do these features predict the instructor rating?"),
-    dcc.Graph(id="correlation_plot"),
-], className="one-third column")
+predictive_power_of_features = html.Div(
+    [
+        html.H3("Predictive Power of Features"),
+        html.P("How well do these features predict the instructor rating?"),
+        dcc.Graph(id="correlation_plot"),
+    ],
+    className="one-third column",
+)
 
-correlating_instructor_reviews = html.Div([
-    controlling_factors,
-    distribution_of_reviews,
-    predictive_power_of_features
-], className="row")
+correlating_instructor_reviews = html.Div(
+    [controlling_factors, distribution_of_reviews, predictive_power_of_features],
+    className="row",
+)
+
+### SEMANTIC SEARCH ###
+search_box = html.Div(
+    [
+        html.H2("Semantic Search"),
+        html.P("Describe what you want semantically"),
+        dcc.Input(
+            id="search-input",
+            type="text",  # debounce=True,
+            placeholder="I want a class on computer networking...",
+        ),
+    ],
+    className="one-third column",
+)
+
+search_table = html.Div(
+    [
+        html.H2("Top Courses"),
+        dash_table.DataTable(
+            id="search_results",
+            data=[],
+            # style_data={
+            #     "whiteSpace": "normal",
+            #     "height": "auto",
+            # },
+            columns=[
+                {
+                    "name": "Course Title",
+                    "id": "title",
+                },
+                {
+                    "name": "Description",
+                    "id": "description",
+                },
+            ],
+            style_cell={"textAlign": "left"},
+            style_as_list_view=True,
+        ),
+    ],
+    className="two-thirds column",
+)
+
+semantic_search = html.Div(
+    [
+        search_box,
+        search_table,
+    ],
+    className="row",
+)
+
+search_section = html.Div(
+    [
+        dcc.Markdown(
+            """
+## Finding a New Course
+
+Explore courses that you may have not considered taking before, but have a proven track record of being enjoyable courses.
+    """
+        ),
+        html.Hr(),
+    ]
+)
 
 ### FINAL LAYOUT ###
-app.layout = html.Div([
-   header,
-   course_filter_section,
-   correlating_instructor_reviews,
-], className="container")
+app.layout = html.Div(
+    [
+        header,
+        html.Hr(),
+        course_filter_section,
+        html.Hr(),
+        correlating_instructor_reviews,
+        html.Hr(),
+        semantic_search,
+    ],
+    className="container",
+)
 
 server = app.server
 
-if __name__ == '__main__':
-    app.run_server(jupyter_mode='tab')
+
+# In[157]:
+
+
+if __name__ == "__main__":
+    import random
+    port = random.randint(8000, 9000)
+    app.run_server(debug=True, port=port, jupyter_mode="tab")
 

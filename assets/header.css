@@ -1,0 +1,66 @@
+html {
+    overflow: none;
+}
+
+#search-box {
+    height: 500px;
+}
+
+h1{
+    font-weight: 1000;
+    letter-spacing: -.1rem;
+    margin-top: 5rem;
+}
+
+p {
+    font-size: 2.25rem;
+    letter-spacing: .05rem;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+#features_to_plot > label {
+    font-size: 2.5rem;
+    letter-spacing: -0.05rem;
+    margin-top: 1rem;
+    margin-left: 0.5rem;
+    font-weight: 400;
+}
+
+textarea {
+    width: 300px;
+}
+
+.column-header-name{
+    font-weight: 200;
+}
+
+hr {
+    border-color: black;
+    border-width: 4px;
+}
+
+h3 {
+    letter-spacing: -.05rem;
+    font-weight: bold;
+}
+
+/* Getting columns to look right */
+.column-cont {
+  margin: 0;
+  padding: 0;
+  width: fill;
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  inset: 0;
+  z-index: -1;
+}
+
+.column-cont > * {
+  height: 100vh;
+  border: 0.25px dashed black;
+  opacity: 10%;
+}
